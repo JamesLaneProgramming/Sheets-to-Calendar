@@ -70,6 +70,9 @@ def main():
         spreadsheetId=spreadsheetId, range=sheetRange).execute()
     dataArray = results.get('values', [])
 
+    #Split birthday. If array[0] is 4 characters, assign year. 
+    #If array[1] or array[2] is greater than 12,
+    #Suggest swappping format for days and months.
     if not dataArray:
         print('No data found.')
     else:
