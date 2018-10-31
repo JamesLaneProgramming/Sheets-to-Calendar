@@ -7,4 +7,3 @@ Once downloaded you will need to move the file into the working directory and re
 Ensure that the script does not have any errors.
 
 Use 'Python3 new_sheets_to_calendar.py' to retrieve the values from google sheets.
-
