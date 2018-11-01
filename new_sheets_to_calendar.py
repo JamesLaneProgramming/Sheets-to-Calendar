@@ -6,8 +6,8 @@ from oauth2client import file, client, tools
 import psycopg2
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly'
-
+SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/calendar'
+attendees_emails = ['jamesjrlane@gmail.com', 'james@proton', 'Jimmy@coder']
 def main():
     """Shows basic usage of the Sheets API.
     Prints values from a sample spreadsheet.
@@ -34,39 +34,45 @@ def main():
             #Print columns A and E, which correspond to indices 0 and 4.
             full_name = row[0]
             birthday = row[1].split("/")
-            print(full_name)
-            print(birthday)
             if(one_tested == False):
-                create_calendar_event(calendar_service, full_name, birthday)
+                attendees = create_attendees_object(attendees_emails)
+                create_calendar_event(calendar_service, full_name, birthday, attendees)
                 one_tested = True
 
-def create_calendar_event(service, full_name, birthday):
+def create_attendees_object(attendees):
+    '''
+    Takes a list of attendees email addresses and returns an object for use in a calendar event.
+    '''
+    attendees_object = []
+    for attendee in attendees:
+        attendees_object.append({'email': str(attendee)})
+    return attendees_object
+
+def create_calendar_event(service, full_name, birthday, attendees):
     event = {
             'summary': 'It\'s {0} \'s Birthday today'.format(full_name),
             'location': 'Coder Academy',
             'description': 'It\'s a students birthday :)',
-             'start': {
-                       'dateTime':
-                       '2018-{0}-{1}T09:00:00+10:00'.format(birthday[1], birthday[0]),
-                       'timeZone': 'Australia/Sydney',
-                      },
-             'end': {
-                     'dateTime':
-                     '2018-{0}-{1}T10:00:00+10:00'.format(birthday[1], birthday[0]),
-                     'timeZone': 'Australia/Sydney',
-                    },
-
-             'attendees': [
-                           {'email': 'Test@email.com'},
-                          ],
-             'reminders': {
-                           'useDefault': False,
-                           'overrides': [
-                                         {'method': 'email', 'minutes': 24 * 60},
-                                         {'method': 'popup', 'minutes': 10},
-                                        ],
-                          },
+            'start': {
+                'dateTime':
+                '2018-{0}-{1}T09:00:00+10:00'.format(birthday[1], birthday[0]),
+                'timeZone': 'Australia/Sydney',
+                },
+            'end': {
+                'dateTime':
+                '2018-{0}-{1}T10:00:00+10:00'.format(birthday[1], birthday[0]),
+                'timeZone': 'Australia/Sydney',
+                },
+            'attendees': attendees,
+            'reminders': {
+                'useDefault': False,
+                'overrides': [
+                        {'method': 'email', 'minutes': 24 * 60},
+                        {'method': 'popup', 'minutes': 10},
+                    ],
+                },
              }
-    event = service.events().insert(calendarId='primary', body=event).execute()
+    print(event)
+    #event = service.events().insert(calendarId='primary', body=event).execute()
 if __name__ == '__main__':
     main()
