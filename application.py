@@ -7,7 +7,8 @@ import psycopg2
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/calendar'
-attendees_emails = ['jamesjrlane@gmail.com', 'james@proton', 'Jimmy@coder']
+attendees_emails = ['james.lane@coderacademy.edu.au']
+
 def main():
     """Shows basic usage of the Sheets API.
     Prints values from a sample spreadsheet.
@@ -25,7 +26,7 @@ def main():
     result = service.spreadsheets().values().get(spreadsheetId=SPREADSHEET_ID,
                                                 range=RANGE_NAME).execute()
     values = result.get('values', [])
-    one_tested = False
+
     if not values:
         print('No data found.')
     else:
@@ -34,10 +35,10 @@ def main():
             #Print columns A and E, which correspond to indices 0 and 4.
             full_name = row[0]
             birthday = row[1].split("/")
-            if(one_tested == False):
+            campus = row[3]
+            if(campus == 'Coder Academy (Brisbane)'):
                 attendees = create_attendees_object(attendees_emails)
                 create_calendar_event(calendar_service, full_name, birthday, attendees)
-                one_tested = True
 
 def create_attendees_object(attendees):
     '''
@@ -50,9 +51,9 @@ def create_attendees_object(attendees):
 
 def create_calendar_event(service, full_name, birthday, attendees):
     event = {
-            'summary': 'It\'s {0} \'s Birthday today'.format(full_name),
+            'summary': 'It\'s {0} \'s birthday today'.format(full_name),
             'location': 'Coder Academy',
-            'description': 'It\'s a students birthday :)',
+            'description': 'It\'s a student\'s birthday :)',
             'start': {
                 'dateTime':
                 '2018-{0}-{1}T09:00:00+10:00'.format(birthday[1], birthday[0]),
@@ -73,6 +74,6 @@ def create_calendar_event(service, full_name, birthday, attendees):
                 },
              }
     print(event)
-    #event = service.events().insert(calendarId='primary', body=event).execute()
+    event = service.events().insert(calendarId='primary', body=event).execute()
 if __name__ == '__main__':
     main()
