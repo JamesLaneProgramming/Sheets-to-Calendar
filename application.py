@@ -7,7 +7,27 @@ import psycopg2
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/calendar'
-attendees_emails = ['james.lane@coderacademy.edu.au']
+
+brisbane_attendees_emails = [
+        'ashleigh.wilson@coderacademy.edu.au', 
+        'janel.brandon@coderacademy.edu.au', 
+        'matt.etherington@coderacademy.edu.au'
+        ]
+sydney_attendees_emails = [
+        'garret.blankenship@coderacademy.edu.au',
+        'saad.saeed@coderacademy.edu.au',
+        'mel.redding@coderacademy.edu.au',
+        'steph.schaffer@coderacademy.edu.au',
+        'gemma.thompson@coderacademy.edu.au',
+        'pauline.futeran@coderacademy.edu.au'
+        ]
+melbourne_attendees_emails = [
+        'matt.mckenzie@coderacademy.edu.au', 
+        'ruegen.aschenbrenner@coderacademy.edu.au', 
+        'gretchen.scott@coderacademy.edu.au', 
+        'samara.jesney@coderacademy.edu.au', 
+        'harrison.malone@coderacademy.edu.au'
+        ]
 
 def main():
     """Shows basic usage of the Sheets API.
@@ -21,7 +41,7 @@ def main():
     service = build('sheets', 'v4', http=creds.authorize(Http()))
     calendar_service = build('calendar', 'v3', http=creds.authorize(Http()))
     # Call the Sheets API
-    SPREADSHEET_ID = '1U3yzTCYoC2dGMGdgy1wTU-v0vbcobBp8kMSVoABMxis'
+    SPREADSHEET_ID = '1AChP79VYiq06pqJVMnnv-Tvgy7ePMmvza1CG06CAyuA'
     RANGE_NAME = 'Date of Birth by Location!A2:D'
     result = service.spreadsheets().values().get(spreadsheetId=SPREADSHEET_ID,
                                                 range=RANGE_NAME).execute()
@@ -36,9 +56,17 @@ def main():
             full_name = row[0]
             birthday = row[1].split("/")
             campus = row[3]
-            if(campus == 'Coder Academy (Brisbane)'):
-                attendees = create_attendees_object(attendees_emails)
+            if(campus == 'Coder Academy (Melbourne)'):
+                attendees = create_attendees_object(melbourne_attendees_emails)
                 create_calendar_event(calendar_service, full_name, birthday, attendees)
+            if(campus == 'Coder Academy (Sydney)'):
+                attendees = create_attendees_object(sydney_attendees_emails)
+                create_calendar_event(calendar_service, full_name, birthday, attendees)
+            '''
+            if(campus == 'Coder Academy (Brisbane)'):
+                attendees = create_attendees_object(brisbane_attendees_emails)
+                create_calendar_event(calendar_service, full_name, birthday, attendees)
+            '''
 
 def create_attendees_object(attendees):
     '''
