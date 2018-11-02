@@ -62,11 +62,9 @@ def main():
             if(campus == 'Coder Academy (Sydney)'):
                 attendees = create_attendees_object(sydney_attendees_emails)
                 create_calendar_event(calendar_service, full_name, birthday, attendees)
-            '''
             if(campus == 'Coder Academy (Brisbane)'):
                 attendees = create_attendees_object(brisbane_attendees_emails)
                 create_calendar_event(calendar_service, full_name, birthday, attendees)
-            '''
 
 def create_attendees_object(attendees):
     '''
